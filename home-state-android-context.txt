@@ -1,0 +1,145 @@
+﻿
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:1:package com.example.lampstandmobile.data.convex
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:2:
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:3:import kotlinx.coroutines.Dispatchers
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:4:import kotlinx.coroutines.flow.first
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:5:import kotlinx.coroutines.withContext
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:6:
+> app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:7:class PathsDataFlow {
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:8:    private val client
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:9:        get() = ConvexClientProvider.client
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:10:
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:11:    /**
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:12:     * Fetches the home state for the current user.
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:13:     * Returns a map containing the state and relevant path/session data.
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:14:     */
+> app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:15:    suspend fun getHomeState(): Result<Map<String, Any?>> =
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:16:        withContext(Dispatchers.IO) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:17:            runCatching {
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:18:                @Suppress("UNCHECKED_CAST")
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:19:                client.subscribe<Map<String, Any?>>(
+> app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:20:                    "paths:getHomeState",
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:21:                    emptyMap()
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:22:                ).first().getOrThrow()
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:23:            }
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:24:        }
+  app\src\main\java\com\example\lampstandmobile\data\convex\PathsDataFlow.kt:25:}
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:99:                    Text(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:100:                        text = "Welcome Back",
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:101:                        fontSize = 14.sp,
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:102:                        fontWeight = FontWeight.Medium,
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:103:                        color = Color(0xFF64748B)
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:104:                    )
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:105:                }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:106:            }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:107:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:108:            // Active Path Banner
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:109:            val homeState = state.homeState
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:110:            val status = homeState?.get("state") as? String ?: 
+"no_path"
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:111:            val pathTitle = homeState?.get("pathTitle") as? String 
+?: "No Active Path"
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:112:            val currentDay = (homeState?.get("currentDay") as? 
+Number)?.toInt() ?: 0
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:113:            val totalDays = (homeState?.get("totalDays") as? 
+Number)?.toInt() ?: 0
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:114:            val todayDone = homeState?.get("todayDone") as? Boolean 
+?: false
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:115:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:116:            Column(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:117:                modifier = Modifier
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:118:                    .fillMaxWidth()
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:119:                    .padding(horizontal = 24.dp)
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:120:                    .padding(bottom = 32.dp)
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:121:            ) {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:122:                Box(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:123:                    modifier = Modifier
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:124:                        .fillMaxWidth()
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:125:                        .height(260.dp)
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:126:                        .clip(RoundedCornerShape(12.dp))
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:127:                        .background(Color(0xFF9BB8C5))
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:128:                ) {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:129:                    Image(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:130:                        painter = 
+painterResource(R.drawable.sailboat),
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:131:                        contentDescription = null,
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:132:                        modifier = Modifier.fillMaxSize(),
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:133:                        contentScale = ContentScale.Crop
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:134:                    )
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:135:                    Column(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:136:                        modifier = Modifier
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:137:                            .fillMaxWidth()
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:138:                            .padding(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:139:                                start = 12.dp,
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:140:                                end = 12.dp,
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:141:                                bottom = 12.dp
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:142:                            )
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:143:                            .align(Alignment.BottomCenter)
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt:144:                            .clip(RoundedCornerShape(12.dp))
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardState.kt:1:package com.example.lampstandmobile.ui.dashboard
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardState.kt:2:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardState.kt:3:data class DashboardState(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardState.kt:4:    val isLoading: Boolean = false,
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardState.kt:5:    val homeState: Map<String, Any?>? = null,
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardState.kt:6:    val errorMessage: String? = null
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardState.kt:7:)
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:1:package com.example.lampstandmobile.ui.dashboard
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:2:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:3:import androidx.lifecycle.ViewModel
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:4:import androidx.lifecycle.viewModelScope
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:5:import com.example.lampstandmobile.data.convex.PathsDataFlow
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:6:import kotlinx.coroutines.flow.MutableStateFlow
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:7:import kotlinx.coroutines.flow.StateFlow
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:8:import kotlinx.coroutines.flow.asStateFlow
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:9:import kotlinx.coroutines.flow.update
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:10:import kotlinx.coroutines.launch
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:11:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:12:class DashboardViewModel(
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:13:    private val pathsDataFlow: PathsDataFlow = PathsDataFlow()
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:14:) : ViewModel() {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:15:    private val _uiState = MutableStateFlow(DashboardState())
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:16:    val uiState: StateFlow<DashboardState> = _uiState.asStateFlow()
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:17:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:18:    init {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:19:        refreshData()
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:20:    }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:21:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:22:    fun onAction(action: DashboardAction) {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:23:        when (action) {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:24:            DashboardAction.Refresh -> refreshData()
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:25:            is DashboardAction.ItemClicked -> 
+handleItemClick(action.id)
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:26:        }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:27:    }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:28:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:29:    private fun refreshData() {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:30:        _uiState.update { it.copy(isLoading = true) }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:31:        viewModelScope.launch {
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:32:            pathsDataFlow.getHomeState()
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:33:                .onSuccess { state ->
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:34:                    _uiState.update {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:35:                        it.copy(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:36:                            isLoading = false,
+> app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:37:                            homeState = state,
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:38:                            errorMessage = null
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:39:                        )
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:40:                    }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:41:                }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:42:                .onFailure { error ->
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:43:                    _uiState.update {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:44:                        it.copy(
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:45:                            isLoading = false,
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:46:                            errorMessage = error.message ?: 
+"Failed to load dashboard"
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:47:                        )
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:48:                    }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:49:                }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:50:        }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:51:    }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:52:
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:53:    private fun handleItemClick(id: String) {
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:54:        // TODO: Handle item click
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:55:    }
+  app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt:56:}
+
+

@@ -1,0 +1,245 @@
+﻿
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:1:package com.example.lampstandmobile.data.convex
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:2:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:3:import android.content.Context
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:4:import dev.convex.android.AuthProvider
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:5:import java.util.concurrent.atomic.AtomicReference
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:6:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:7:class ConvexAuthProvider : AuthProvider<String> {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:8:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:9:    private val idToken = AtomicReference<String?>(null)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:10:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:11:    override suspend fun login(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:12:        context: Context,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:13:        onIdToken: (String?) -> Unit
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:14:    ): Result<String> {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:15:        val token = idToken.get()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:16:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:17:        return if (token != null) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:18:            onIdToken(token)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:19:            Result.success(token)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:20:        } else {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:21:            Result.failure(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:22:                IllegalStateException(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:23:                    "No Convex authentication token is available."
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:24:                )
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:25:            )
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:26:        }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:27:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:28:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:29:    override suspend fun loginFromCache(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:30:        onIdToken: (String?) -> Unit
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:31:    ): Result<String> {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:32:        val token = idToken.get()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:33:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:34:        return if (token != null) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:35:            onIdToken(token)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:36:            Result.success(token)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:37:        } else {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:38:            Result.failure(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:39:                IllegalStateException(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:40:                    "No cached Convex authentication token is 
+available."
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:41:                )
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:42:            )
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:43:        }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:44:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:45:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:46:    override suspend fun logout(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:47:        context: Context
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:48:    ): Result<Void?> {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:49:        idToken.set(null)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:50:        return Result.success(null)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:51:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:52:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:53:    override fun extractIdToken(result: String): String {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:54:        return result
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:55:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:56:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:57:    fun setIdToken(token: String) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:58:        idToken.set(token)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:59:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:60:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:61:    fun clearIdToken() {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:62:        idToken.set(null)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:63:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:64:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:65:    fun getIdToken(): String? {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:66:        return idToken.get()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:67:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt:68:}
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:2:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:3:import kotlinx.coroutines.Dispatchers
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:4:import kotlinx.coroutines.withContext
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:5:import kotlinx.serialization.json.Json
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:6:import kotlinx.serialization.json.jsonObject
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:7:import kotlinx.serialization.json.jsonPrimitive
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:8:import okhttp3.FormBody
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:9:import okhttp3.OkHttpClient
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:10:import okhttp3.Request
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:11:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:12:class ConvexAuthService(
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:13:    private val authProvider: ConvexAuthProvider,
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:14:    private val tokenStorage: ConvexTokenStorage,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:15:    private val httpClient: OkHttpClient = OkHttpClient()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:16:) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:17:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:18:    suspend fun sendOtp(email: String): Result<Unit> =
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:19:        withContext(Dispatchers.IO) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:20:            runCatching {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:21:                val body = FormBody.Builder()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:22:                    .add("provider", "resend-otp")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:23:                    .add("email", email)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:24:                    .build()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:25:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:26:                val request = Request.Builder()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:27:                    .url("${ConvexConfig.SITE_URL}/auth")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:28:                    .post(body)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:29:                    .build()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:30:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:31:                httpClient.newCall(request).execute().use { response 
+->
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:32:                    if (!response.isSuccessful) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:33:                        error("Failed to send OTP: HTTP 
+${response.code}")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:34:                    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:35:                }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:36:            }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:37:        }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:38:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:39:    suspend fun verifyOtp(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:40:        email: String,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:41:        code: String
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:42:    ): Result<Unit> =
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:43:        withContext(Dispatchers.IO) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:44:            runCatching {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:45:                val body = FormBody.Builder()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:46:                    .add("provider", "resend-otp")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:47:                    .add("email", email)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:48:                    .add("code", code)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:49:                    .build()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:50:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:51:                val request = Request.Builder()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:52:                    .url("${ConvexConfig.SITE_URL}/auth")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:53:                    .post(body)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:54:                    .build()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:55:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:56:                httpClient.newCall(request).execute().use { response 
+->
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:57:                    if (!response.isSuccessful) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:58:                        error("Invalid or expired code: HTTP 
+${response.code}")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:59:                    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:60:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:61:                    val responseBody = response.body?.string()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:62:                        ?: error("Empty authentication response.")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:63:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:64:                    val json = 
+Json.parseToJsonElement(responseBody).jsonObject
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:65:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:66:                    val token = json["tokens"]
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:67:                        ?.jsonObject
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:68:                        ?.get("token")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:69:                        ?.jsonPrimitive
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:70:                        ?.content
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:71:                        ?: error("Authentication response did not 
+contain a token.")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:72:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:73:                    authProvider.setIdToken(token)
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:74:                    tokenStorage.saveToken(token)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:75:                }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:76:            }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:77:        }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt:78:}
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:11:object ConvexClientProvider {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:12:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:13:    private const val CLIENT_ID = "lampstand-android"
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:14:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:15:    private val authScope = CoroutineScope(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:16:        SupervisorJob() + Dispatchers.IO
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:17:    )
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:18:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:19:    private var applicationContext: Context? = null
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:20:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:21:    lateinit var authProvider: ConvexAuthProvider
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:22:        private set
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:23:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:24:    lateinit var tokenStorage: ConvexTokenStorage
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:25:        private set
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:26:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:27:    lateinit var client: ConvexClientWithAuth<String>
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:28:        private set
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:29:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:30:    val context: Context
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:31:        get() = applicationContext ?: error("ConvexClientProvider 
+not initialized")
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:32:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:33:    fun initialize(context: Context) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:34:        if (::client.isInitialized) return
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:35:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:36:        applicationContext = context.applicationContext
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:37:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:38:        tokenStorage = ConvexTokenStorage(applicationContext!!)
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:39:        authProvider = ConvexAuthProvider()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:40:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:41:        tokenStorage.getToken()?.let { token ->
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:42:            authProvider.setIdToken(token)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:43:        }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:44:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:45:        client = ConvexClientWithAuth(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:46:            ConvexConfig.DEPLOYMENT_URL,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:47:            authProvider,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:48:            authScope
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:49:        ) { deploymentUrl, _, webSocketStateSubscriber ->
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:50:            MobileConvexClient(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:51:                deploymentUrl,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:52:                CLIENT_ID,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:53:                webSocketStateSubscriber
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:54:            )
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:55:        }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:56:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:57:        // Restore authentication state from cache if a token 
+exists
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:58:        if (authProvider.getIdToken() != null) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:59:            authScope.launch {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:60:                client.loginFromCache()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:61:            }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:62:        }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:63:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt:64:}
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:1:package com.example.lampstandmobile.data.convex
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:2:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:3:import android.content.Context
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:4:import androidx.security.crypto.EncryptedSharedPreferences
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:5:import androidx.security.crypto.MasterKey
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:6:
+> app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:7:class ConvexTokenStorage(context: Context) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:8:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:9:    private val masterKey = MasterKey.Builder(context)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:10:        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:11:        .build()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:12:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:13:    private val preferences = EncryptedSharedPreferences.create(
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:14:        context,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:15:        "convex_auth",
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:16:        masterKey,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:17:        
+EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:18:        
+EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:19:    )
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:20:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:21:    fun saveToken(token: String) {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:22:        preferences.edit()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:23:            .putString(KEY_ID_TOKEN, token)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:24:            .apply()
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:25:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:26:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:27:    fun getToken(): String? {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:28:        return preferences.getString(KEY_ID_TOKEN, null)
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:29:    }
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:30:
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:31:    fun clearToken() {
+  app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt:32:        preferences.edit()
+
+

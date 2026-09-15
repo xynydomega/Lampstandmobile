@@ -1,0 +1,883 @@
+===== LAMPSTAND MOBILE CONTEXT =====
+
+
+===== app\src\main\java\com\example\lampstandmobile\MainActivity.kt =====
+
+package com.example.lampstandmobile
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import com.example.lampstandmobile.data.convex.ConvexClientProvider
+
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        ConvexClientProvider.initialize(applicationContext)
+
+        // Existing setContent(...) stays here.
+    }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardAction.kt =====
+
+package com.example.lampstandmobile.ui.dashboard
+
+sealed interface DashboardAction {
+    data object Refresh : DashboardAction
+    data class ItemClicked(val id: String) : DashboardAction
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardDataFlow.kt =====
+
+package com.example.lampstandmobile.ui.dashboard
+
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
+/**
+ * DashboardDataFlow handles the data streaming and processing for the Dashboard.
+ */
+class DashboardDataFlow {
+    fun getDashboardData(): Flow<List<String>> = flow {
+        // Emit data
+        emit(listOf("Item 1", "Item 2", "Item 3"))
+    }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardScreen.kt =====
+
+package com.example.lampstandmobile.ui.dashboard
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.lampstandmobile.navigation.AppDestination
+import com.example.lampstandmobile.ui.components.shared.BottomNav
+import com.example.lampstandmobile.ui.components.shared.BottomNavAction
+import com.example.lampstandmobile.ui.components.shared.BottomNavState
+import com.example.lampstandmobile.ui.components.shared.BottomNavTab
+import com.example.lampstandmobile.ui.theme.LampStandMobileTheme
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.lampstandmobile.R
+
+
+
+@Composable
+fun DashboardScreen(
+    viewModel: DashboardViewModel,
+    onNavigate: (AppDestination) -> Unit
+) {
+    val state by viewModel.uiState.collectAsState()
+
+    DashboardContent(
+        state = state,
+        onAction = viewModel::onAction,
+        onNavigate = onNavigate
+    )
+}
+
+@Composable
+fun DashboardContent(
+    state: DashboardState,
+    onAction: (DashboardAction) -> Unit,
+    onNavigate: (AppDestination) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFDFDFD))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 88.dp)
+        ) {
+
+            // Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 24.dp,
+                        end = 24.dp,
+                        top = 48.dp,
+                        bottom = 24.dp
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = "Hi, there",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF64748B)
+                    )
+
+                    Text(
+                        text = "Welcome Back",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF64748B)
+                    )
+                }
+            }
+
+            // Active Path Banner
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 32.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(260.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF9BB8C5))
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.sailboat),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = 12.dp,
+                                end = 12.dp,
+                                bottom = 12.dp
+                            )
+                            .align(Alignment.BottomCenter)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color.White)
+                            .padding(20.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Color(0xFFE3F0F8))
+                                    .padding(
+                                        horizontal = 8.dp,
+                                        vertical = 4.dp
+                                    )
+                            ) {
+                                Text(
+                                    text = "NO ACTIVE PATH",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF2A5975)
+                                )
+                            }
+
+                            Text(
+                                text = "Day X of Y",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF2A5975)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp)
+                                .clip(RoundedCornerShape(50))
+                                .background(Color(0xFFF1F5F9))
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0f)
+                                    .fillMaxHeight()
+                                    .clip(RoundedCornerShape(50))
+                                    .background(Color(0xFF305C76))
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Text(
+                            text = "Please select a path to get started.",
+                            fontSize = 14.sp,
+                            color = Color(0xFF64748B),
+                            modifier = Modifier.padding(bottom = 20.dp)
+                        )
+
+                        Button(
+                            onClick = {
+                                onAction(DashboardAction.Refresh)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(54.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF305C76),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(
+                                text = "Go to Paths",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Spotlight
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp)
+                    .padding(bottom = 32.dp)
+            ) {
+                Text(
+                    text = "Spotlight",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF334155),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(end = 12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .width(256.dp)
+                            .height(144.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0xFF345D77))
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.spotlight1),
+                            contentDescription = "Thumbnail",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .width(256.dp)
+                            .height(144.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0xFF496E87))
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.spotlight2),
+                            contentDescription = "Thumbnail",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+            }
+
+            // Recommended For You
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp)
+                    .padding(bottom = 24.dp)
+            ) {
+                Text(
+                    text = "Recommended For You",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF334155),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(end = 12.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.width(200.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .size(200.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color(0xFFD4DDE4))
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.book_with_leaf),
+                                contentDescription = "The Way of Wisdom",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(12.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Text(
+                            text = "Fear & Anxiety",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1E293B)
+                        )
+
+                        Spacer(modifier = Modifier.height(2.dp))
+
+                        Text(
+                            text = "0 Formation Paths",
+                            fontSize = 13.sp,
+                            color = Color(0xFF94A3B8)
+                        )
+                    }
+                }
+            }
+        }
+
+        // Fixed BottomNav
+        BottomNav(
+            state = BottomNavState(activeTab = BottomNavTab.HOME),
+            onAction = { action ->
+                if (action is BottomNavAction.SelectTab) {
+                    when (action.tab) {
+                        BottomNavTab.HOME -> onNavigate(AppDestination.HOME)
+                        BottomNavTab.PATHS -> onNavigate(AppDestination.PATHS)
+                        BottomNavTab.JOURNEY -> onNavigate(AppDestination.JOURNEY)
+                        BottomNavTab.PROFILE -> onNavigate(AppDestination.PROFILE)
+                    }
+                }
+            },
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DashboardPreview() {
+    LampStandMobileTheme {
+        DashboardContent(
+            state = DashboardState(),
+            onAction = {},
+            onNavigate = {}
+        )
+    }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardState.kt =====
+
+package com.example.lampstandmobile.ui.dashboard
+
+data class DashboardState(
+    val isLoading: Boolean = false,
+    val items: List<String> = emptyList(),
+    val errorMessage: String? = null
+)
+
+
+===== app\src\main\java\com\example\lampstandmobile\ui\dashboard\DashboardViewModel.kt =====
+
+package com.example.lampstandmobile.ui.dashboard
+
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+class DashboardViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(DashboardState())
+    val uiState: StateFlow<DashboardState> = _uiState.asStateFlow()
+
+    fun onAction(action: DashboardAction) {
+        when (action) {
+            DashboardAction.Refresh -> refreshData()
+            is DashboardAction.ItemClicked -> handleItemClick(action.id)
+        }
+    }
+
+    private fun refreshData() {
+        _uiState.update { it.copy(isLoading = true) }
+        // TODO: Implement data fetching
+    }
+
+    private fun handleItemClick(id: String) {
+        // TODO: Handle item click
+    }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthProvider.kt =====
+
+package com.example.lampstandmobile.data.convex
+
+import android.content.Context
+import dev.convex.android.AuthProvider
+import java.util.concurrent.atomic.AtomicReference
+
+class ConvexAuthProvider : AuthProvider<String> {
+
+    private val idToken = AtomicReference<String?>(null)
+
+    override suspend fun login(
+        context: Context,
+        onIdToken: (String?) -> Unit
+    ): Result<String> {
+        val token = idToken.get()
+
+        return if (token != null) {
+            onIdToken(token)
+            Result.success(token)
+        } else {
+            Result.failure(
+                IllegalStateException(
+                    "No Convex authentication token is available."
+                )
+            )
+        }
+    }
+
+    override suspend fun loginFromCache(
+        onIdToken: (String?) -> Unit
+    ): Result<String> {
+        val token = idToken.get()
+
+        return if (token != null) {
+            onIdToken(token)
+            Result.success(token)
+        } else {
+            Result.failure(
+                IllegalStateException(
+                    "No cached Convex authentication token is available."
+                )
+            )
+        }
+    }
+
+    override suspend fun logout(
+        context: Context
+    ): Result<Void?> {
+        idToken.set(null)
+        return Result.success(null)
+    }
+
+    override fun extractIdToken(result: String): String {
+        return result
+    }
+
+    fun setIdToken(token: String) {
+        idToken.set(token)
+    }
+
+    fun clearIdToken() {
+        idToken.set(null)
+    }
+
+    fun getIdToken(): String? {
+        return idToken.get()
+    }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\data\convex\ConvexAuthService.kt =====
+
+package com.example.lampstandmobile.data.convex
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+
+class ConvexAuthService(
+    private val authProvider: ConvexAuthProvider,
+    private val tokenStorage: ConvexTokenStorage,
+    private val httpClient: OkHttpClient = OkHttpClient()
+) {
+
+    suspend fun sendOtp(email: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val body = FormBody.Builder()
+                    .add("provider", "resend-otp")
+                    .add("email", email)
+                    .build()
+
+                val request = Request.Builder()
+                    .url("${ConvexConfig.SITE_URL}/auth")
+                    .post(body)
+                    .build()
+
+                httpClient.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        error("Failed to send OTP: HTTP ${response.code}")
+                    }
+                }
+            }
+        }
+
+    suspend fun verifyOtp(
+        email: String,
+        code: String
+    ): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val body = FormBody.Builder()
+                    .add("provider", "resend-otp")
+                    .add("email", email)
+                    .add("code", code)
+                    .build()
+
+                val request = Request.Builder()
+                    .url("${ConvexConfig.SITE_URL}/auth")
+                    .post(body)
+                    .build()
+
+                httpClient.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        error("Invalid or expired code: HTTP ${response.code}")
+                    }
+
+                    val responseBody = response.body?.string()
+                        ?: error("Empty authentication response.")
+
+                    val json = Json.parseToJsonElement(responseBody).jsonObject
+
+                    val token = json["tokens"]
+                        ?.jsonObject
+                        ?.get("token")
+                        ?.jsonPrimitive
+                        ?.content
+                        ?: error("Authentication response did not contain a token.")
+
+                    authProvider.setIdToken(token)
+                    tokenStorage.saveToken(token)
+                }
+            }
+        }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\data\convex\ConvexClientProvider.kt =====
+
+package com.example.lampstandmobile.data.convex
+
+import android.content.Context
+import dev.convex.android.ConvexClientWithAuth
+import dev.convex.android.MobileConvexClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+
+object ConvexClientProvider {
+
+    private const val CLIENT_ID = "lampstand-android"
+
+    private val authScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.IO
+    )
+
+    private var applicationContext: Context? = null
+
+    lateinit var authProvider: ConvexAuthProvider
+        private set
+
+    lateinit var tokenStorage: ConvexTokenStorage
+        private set
+
+    lateinit var client: ConvexClientWithAuth<String>
+        private set
+
+    val context: Context
+        get() = applicationContext ?: error("ConvexClientProvider not initialized")
+
+    fun initialize(context: Context) {
+        if (::client.isInitialized) return
+
+        applicationContext = context.applicationContext
+
+        tokenStorage = ConvexTokenStorage(applicationContext!!)
+        authProvider = ConvexAuthProvider()
+
+        tokenStorage.getToken()?.let { token ->
+            authProvider.setIdToken(token)
+        }
+
+        client = ConvexClientWithAuth(
+            ConvexConfig.DEPLOYMENT_URL,
+            authProvider,
+            authScope
+        ) { deploymentUrl, _, webSocketStateSubscriber ->
+            MobileConvexClient(
+                deploymentUrl,
+                CLIENT_ID,
+                webSocketStateSubscriber
+            )
+        }
+
+        // Restore authentication state from cache if a token exists
+        if (authProvider.getIdToken() != null) {
+            authScope.launch {
+                client.loginFromCache()
+            }
+        }
+    }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\data\convex\ConvexConfig.kt =====
+
+package com.example.lampstandmobile.data.convex
+
+object ConvexConfig {
+    const val DEPLOYMENT_URL =
+        "https://exciting-dodo-656.convex.cloud"
+
+    const val SITE_URL =
+        "https://exciting-dodo-656.convex.site"
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\data\convex\ConvexTokenStorage.kt =====
+
+package com.example.lampstandmobile.data.convex
+
+import android.content.Context
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+
+class ConvexTokenStorage(context: Context) {
+
+    private val masterKey = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+
+    private val preferences = EncryptedSharedPreferences.create(
+        context,
+        "convex_auth",
+        masterKey,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
+
+    fun saveToken(token: String) {
+        preferences.edit()
+            .putString(KEY_ID_TOKEN, token)
+            .apply()
+    }
+
+    fun getToken(): String? {
+        return preferences.getString(KEY_ID_TOKEN, null)
+    }
+
+    fun clearToken() {
+        preferences.edit()
+            .remove(KEY_ID_TOKEN)
+            .apply()
+    }
+
+    companion object {
+        private const val KEY_ID_TOKEN = "id_token"
+    }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\data\convex\UsersDataFlow.kt =====
+
+package com.example.lampstandmobile.data.convex
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+class UsersDataFlow {
+
+    private val client
+        get() = ConvexClientProvider.client
+
+    suspend fun getMe(): Result<Map<String, Any?>> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                @Suppress("UNCHECKED_CAST")
+                client.query(
+                    "users:me",
+                    emptyMap()
+                ) as Map<String, Any?>
+            }
+        }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\navigation\AppNavigation.kt =====
+
+package com.example.lampstandmobile.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.lampstandmobile.data.convex.ConvexClientProvider
+import com.example.lampstandmobile.ui.auth.AuthNavigation
+import com.example.lampstandmobile.ui.dashboard.DashboardScreen
+import com.example.lampstandmobile.ui.dashboard.DashboardViewModel
+import com.example.lampstandmobile.ui.journey.JourneyScreen
+import com.example.lampstandmobile.ui.paths.PathsScreen
+import com.example.lampstandmobile.ui.profile.ProfileScreen
+import com.example.lampstandmobile.ui.theme.LampStandMobileTheme
+import dev.convex.android.AuthState
+
+@Composable
+fun AppNavigation() {
+    var state by remember {
+        mutableStateOf(AppNavigationState())
+    }
+
+    val onNavigate: (AppDestination) -> Unit = { destination ->
+        state = state.copy(currentDestination = destination)
+    }
+
+    val convexAuthState by ConvexClientProvider.client.authState.collectAsState()
+
+    LaunchedEffect(convexAuthState) {
+        when (convexAuthState) {
+            is AuthState.Authenticated -> {
+                if (state.currentDestination == AppDestination.AUTH) {
+                    onNavigate(AppDestination.HOME)
+                }
+            }
+            is AuthState.Unauthenticated -> {
+                if (state.currentDestination != AppDestination.AUTH) {
+                    onNavigate(AppDestination.AUTH)
+                }
+            }
+            is AuthState.AuthLoading -> {
+                // Keep current state or show splash
+            }
+        }
+    }
+
+    when (state.currentDestination) {
+        AppDestination.AUTH -> {
+            AuthNavigation()
+        }
+
+        AppDestination.HOME -> {
+            val dashboardViewModel: DashboardViewModel = viewModel()
+
+            DashboardScreen(
+                viewModel = dashboardViewModel,
+                onNavigate = onNavigate
+            )
+        }
+
+        AppDestination.PATHS -> {
+            PathsScreen(onNavigate = onNavigate)
+        }
+
+        AppDestination.JOURNEY -> {
+            JourneyScreen(onNavigate = onNavigate)
+        }
+
+        AppDestination.PROFILE -> {
+            ProfileScreen(onNavigate = onNavigate)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppNavigationPreview() {
+    LampStandMobileTheme {
+        AppNavigation()
+    }
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\navigation\AppNavigationAction.kt =====
+
+package com.example.lampstandmobile.navigation
+
+sealed interface AppNavigationAction {
+    data class SelectDestination(
+        val destination: AppDestination
+    ) : AppNavigationAction
+}
+
+
+===== app\src\main\java\com\example\lampstandmobile\navigation\AppNavigationState.kt =====
+
+package com.example.lampstandmobile.navigation
+
+enum class AppDestination {
+    AUTH,
+    HOME,
+    PATHS,
+    JOURNEY,
+    PROFILE
+}
+
+data class AppNavigationState(
+    val currentDestination: AppDestination = AppDestination.AUTH
+)
+
