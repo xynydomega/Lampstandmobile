@@ -1,36 +1,72 @@
 package com.example.lampstandmobile.data.convex
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import okhttp3.FormBody
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 
-class ConvexAuthService(
-    private val authProvider: ConvexAuthProvider,
-    private val tokenStorage: ConvexTokenStorage,
-    private val httpClient: OkHttpClient = OkHttpClient()
-) {
+class ConvexAuthService {
+
+    private val client = OkHttpClient()
+
+    private suspend fun cleanupDevBypassCodes() {
+        // Mirrors web app: app/auth/page.tsx calls api.users.cleanupDevBypassCodes before dev login
+        // Prevents "unique() query returned more than one result from table authVerificationCodes" when AUTH_DEV_BYPASS_CODE=0000
+        runCatching {
+            val body = JSONObject()
+                .put("path", "users:cleanupDevBypassCodes")
+                .put("args", JSONObject())
+                .put("format", "json")
+                .toString()
+            val request = Request.Builder()
+                .url("${ConvexConfig.DEPLOYMENT_URL}/api/mutation")
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .build()
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    Log.w("ConvexAuthService", "cleanupDevBypassCodes failed: ${response.code} ${response.body?.string()}")
+                }
+            }
+        }.onFailure { Log.w("ConvexAuthService", "cleanupDevBypassCodes error", it) }
+    }
 
     suspend fun sendOtp(email: String): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching {
-                val body = FormBody.Builder()
-                    .add("provider", "resend-otp")
-                    .add("email", email)
-                    .build()
+                // Clean duplicates first so verifyCodeAndSignIn unique() doesn't crash with 0000 bypass
+                cleanupDevBypassCodes()
+                val body = JSONObject()
+                    .put("path", "auth:signIn")
+                    .put(
+                        "args",
+                        JSONObject()
+                            .put("provider", "resend-otp")
+                            .put(
+                                "params",
+                                JSONObject().put("email", email)
+                            )
+                    )
+                    .put("format", "json")
+                    .toString()
 
                 val request = Request.Builder()
-                    .url("${ConvexConfig.SITE_URL}/auth")
-                    .post(body)
+                    .url("${ConvexConfig.DEPLOYMENT_URL}/api/action")
+                    .post(
+                        body.toRequestBody(
+                            "application/json".toMediaType()
+                        )
+                    )
                     .build()
 
-                httpClient.newCall(request).execute().use { response ->
+                client.newCall(request).execute().use { response ->
                     if (!response.isSuccessful) {
-                        error("Failed to send OTP: HTTP ${response.code}")
+                        throw Exception(
+                            "OTP request failed: ${response.code} ${response.body?.string()}"
+                        )
                     }
                 }
             }
@@ -42,37 +78,72 @@ class ConvexAuthService(
     ): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching {
-                val body = FormBody.Builder()
-                    .add("provider", "resend-otp")
-                    .add("email", email)
-                    .add("code", code)
-                    .build()
+                val body = JSONObject()
+                    .put("path", "auth:signIn")
+                    .put(
+                        "args",
+                        JSONObject()
+                            .put("provider", "resend-otp")
+                            .put(
+                                "params",
+                                JSONObject()
+                                    .put("email", email)
+                                    .put("code", code)
+                            )
+                    )
+                    .put("format", "json")
+                    .toString()
 
                 val request = Request.Builder()
-                    .url("${ConvexConfig.SITE_URL}/auth")
-                    .post(body)
+                    .url("${ConvexConfig.DEPLOYMENT_URL}/api/action")
+                    .post(
+                        body.toRequestBody(
+                            "application/json".toMediaType()
+                        )
+                    )
                     .build()
 
-                httpClient.newCall(request).execute().use { response ->
+                client.newCall(request).execute().use { response ->
                     if (!response.isSuccessful) {
-                        error("Invalid or expired code: HTTP ${response.code}")
+                        throw Exception(
+                            "OTP verification failed: ${response.code}"
+                        )
                     }
 
                     val responseBody = response.body?.string()
-                        ?: error("Empty authentication response.")
+                        ?: throw Exception("Empty auth response")
 
-                    val json = Json.parseToJsonElement(responseBody).jsonObject
+                    val json = JSONObject(responseBody)
 
-                    val token = json["tokens"]
-                        ?.jsonObject
-                        ?.get("token")
-                        ?.jsonPrimitive
-                        ?.content
-                        ?: error("Authentication response did not contain a token.")
+                    val token = json
+                        .optJSONObject("value")
+                        ?.optJSONObject("tokens")
+                        ?.optString("token")
+                        ?.takeIf { it.isNotBlank() }
+                        ?: throw Exception("No auth token returned")
 
-                    authProvider.setIdToken(token)
-                    tokenStorage.saveToken(token)
+                    ConvexClientProvider.setAuthToken(token)
+                    ConvexClientProvider.setAuthenticated(true)
+
+                    Log.d(
+                        "ConvexAuthService",
+                        "Authentication successful"
+                    )
+
+                    Unit
                 }
             }
         }
+
+    suspend fun logout(): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                ConvexClientProvider.clearAuthToken()
+                ConvexClientProvider.clearAuthentication()
+                Unit
+            }
+        }
 }
+
+
+
